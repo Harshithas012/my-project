@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>AI Smart Health Rehabilitation Assistant</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .box {
+            background: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        button,
+        select {
+            padding: 10px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        #result,
+        #suggestion,
+        #feedback,
+        #angle,
+        #startMessage {
+            margin-top: 15px;
+            padding: 10px;
+        }
+
+        .cameraBox {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 550px;
+            background: black;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .camera {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        #cameraBox {
+            display: none;
+        }
+
+        .warning {
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .advice {
+            background: #eeeeee;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<h1>
+    AI Smart Health Rehabilitation Assistant
+</h1>
+
+
+<!-- ================================================= -->
+<!-- SYMPTOM CHECKER -->
+<!-- ================================================= -->
+
+<div class="box">
+
+    <h2>
+        Symptom Checker
+    </h2>
+
+
+    <textarea
+        id="symptoms"
+        placeholder="Example: I have a high fever. My body feels very hot. I also feel weak and tired.">
+    </textarea>
+
+
+    <button id="analysis">
+        Check Symptoms
+    </button>
+
+
+    <div id="result"></div>
+
+
+    <p class="warning">
+
+        This tool provides general information only.
+        It is not a medical diagnosis.
+
+    </p>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- REHABILITATION -->
+<!-- ================================================= -->
+
+<div class="box">
+
+    <h2>
+        Rehabilitation Exercise
+    </h2>
+
+
+    <label>
+        Select Condition / Mobility Category:
+    </label>
+
+
+    <select id="condition">
+
+        <option value="">
+            Select condition
+        </option>
+
+        <option value="elderly">
+            Elderly / Mobility Difficulty
+        </option>
+
+        <option value="general">
+            General Mobility
+        </option>
+
+        <option value="knee">
+            Knee Recovery
+        </option>
+
+        <option value="shoulder">
+            Shoulder Recovery
+        </option>
+
+        <option value="wrist">
+            Wrist Recovery
+        </option>
+
+        <option value="hand">
+            Hand Mobility
+        </option>
+
+        <option value="ankle">
+            Ankle Recovery
+        </option>
+
+        <option value="foot">
+            Foot Mobility
+        </option>
+
+        <option value="hip">
+            Hip Mobility
+        </option>
+
+        <option value="back">
+            Back Mobility
+        </option>
+
+        <option value="neck">
+            Neck Mobility
+        </option>
+
+        <option value="leg">
+            Leg Mobility
+        </option>
+
+        <option value="arm">
+            Arm Mobility
+        </option>
+
+        <option value="stiffness">
+            Joint Stiffness
+        </option>
+
+        <option value="balance">
+            Balance Difficulty
+        </option>
+
+        <option value="weakness">
+            Muscle Weakness
+        </option>
+
+        <option value="flexibility">
+            Flexibility Improvement
+        </option>
+
+        <option value="lowerbody">
+            Lower-Body Mobility
+        </option>
+
+        <option value="upperbody">
+            Upper-Body Mobility
+        </option>
+
+        <option value="injury">
+            Post-Injury Recovery
+        </option>
+
+        <option value="surgery">
+            Post-Surgery Exercise
+        </option>
+
+        <option value="limitedmotion">
+            Limited Range of Motion
+        </option>
+
+        <option value="standing">
+            Difficulty Standing
+        </option>
+
+        <option value="walking">
+            Difficulty Walking
+        </option>
+
+        <option value="sitstand">
+            Difficulty Sitting and Standing
+        </option>
+
+        <option value="coordination">
+            Coordination Difficulty
+        </option>
+
+        <option value="daily">
+            Daily Movement Difficulty
+        </option>
+
+        <option value="senior">
+            Senior Fitness / Gentle Exercise
+        </option>
+
+        <option value="home">
+            Home Mobility Training
+        </option>
+
+        <option value="fullbody">
+            Full-Body Mobility
+        </option>
+
+    </select>
+
+
+    <select id="exercise">
+
+        <option value="">
+            First select your condition
+        </option>
+
+    </select>
+
+
+    <div id="suggestion"></div>
+
+
+    <!-- CAMERA -->
+
+    <div
+        id="cameraBox"
+        class="cameraBox">
+
+        <video
+            id="camera"
+            class="camera"
+            autoplay
+            playsinline>
+        </video>
+
+    </div>
+
+
+    <div id="startMessage"></div>
+
+    <div id="angle"></div>
+
+    <div id="feedback"></div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- MEDIAPIPE -->
+<!-- ================================================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+
+
+<script>
+
+
+// =====================================================
+// SYMPTOM CHECKER
+// =====================================================
+
+document
+.getElementById("analysis")
+.addEventListener("click", async function () {
+
+
+    const symptoms =
+        document
+        .getElementById("symptoms")
+        .value;
+
+
+    try {
+
+
+        const response =
+            await fetch(
+                "/analyze",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            symptoms:
+                                symptoms
+
+                        })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        let output =
+            "<b>" +
+            data.message +
+            "</b>";
+
+
+        // Detected symptoms
+
+        if (
+            data.symptoms &&
+            data.symptoms.length > 0
+        ) {
+
+            output +=
+                "<br><br>" +
+                "<b>Detected symptoms:</b><br>" +
+                data.symptoms.join(
+                    "<br>"
+                );
+
+        }
+
+
+        // Categories
+
+        if (
+            data.categories &&
+            data.categories.length > 0
+        ) {
+
+            output +=
+                "<br><br>" +
+                "<b>Related categories:</b><br>" +
+                data.categories.join(
+                    ", "
+                );
+
+        }
+
+
+        // Advice
+
+        if (
+            data.advice &&
+            data.advice.length > 0
+        ) {
+
+            output +=
+                "<br><br>" +
+                "<b>General guidance:</b>";
+
+
+
+            data.advice.forEach(
+                function (advice) {
+
+                    output +=
+                        "<div class='advice'>" +
+                        advice +
+                        "</div>";
+
+                }
+            );
+
+        }
+
+
+        // Exercises
+
+        if (
+            data.exercises &&
+            data.exercises.length > 0
+        ) {
+
+            output +=
+                "<br><b>Related mobility exercises:</b><br>" +
+                data.exercises.join(
+                    "<br>"
+                );
+
+        }
+
+
+        document
+        .getElementById("result")
+        .innerHTML =
+            output;
+
+
+    }
+
+    catch (error) {
+
+        document
+        .getElementById("result")
+        .textContent =
+            "Unable to connect to the server.";
+
+    }
+
+});
+
+
+// =====================================================
+// EXERCISE SUGGESTIONS
+// =====================================================
+
+const suggestions = {
+
+    "Neck Stretch":
+        "Slowly stretch your neck. Do not force the movement.",
+
+    "Neck Rotation":
+        "Slowly turn your head from side to side.",
+
+    "Chin Tuck":
+        "Gently move your chin backward.",
+
+    "Shoulder Stretch":
+        "Gently stretch your shoulder.",
+
+    "Shoulder Rotation":
+        "Rotate your shoulder slowly.",
+
+    "Arm Raise Exercise":
+        "Raise your arm slowly.",
+
+    "Arm Stretch":
+        "Stretch your arm gently.",
+
+    "Arm Circles":
+        "Make slow circular movements with your arms.",
+
+    "Wrist Rotation":
+        "Rotate your wrist slowly.",
+
+    "Wrist Flexion":
+        "Bend your wrist gently.",
+
+    "Wrist Extension":
+        "Extend your wrist gently.",
+
+    "Finger Stretch":
+        "Open and stretch your fingers.",
+
+    "Hand Open and Close":
+        "Slowly open and close your hand.",
+
+    "Knee Extension":
+        "Slowly extend your knee.",
+
+    "Knee Bend Exercise":
+        "Bend your knee slowly.",
+
+    "Straight Leg Raise":
+        "Raise your leg slowly.",
+
+    "Seated Leg Raise":
+        "While seated, slowly raise your leg.",
+
+    "Seated Knee Extension":
+        "Extend your knee while sitting.",
+
+    "Mini Squat":
+        "Perform a gentle small squat.",
+
+    "Hip Rotation":
+        "Move your hip gently.",
+
+    "Hip Stretch":
+        "Stretch your hip slowly.",
+
+    "Hip Abduction":
+        "Move your leg outward slowly.",
+
+    "Standing Leg Raise":
+        "Raise your leg carefully.",
+
+    "Ankle Rotation":
+        "Rotate your ankle slowly.",
+
+    "Ankle Flexion":
+        "Move your ankle up and down.",
+
+    "Heel Raise":
+        "Slowly raise your heels.",
+
+    "Toe Raise":
+        "Slowly raise your toes.",
+
+    "Calf Stretch":
+        "Gently stretch your calf.",
+
+    "Upper Back Stretch":
+        "Stretch your upper back gently.",
+
+    "Lower Back Stretch":
+        "Move your lower back carefully.",
+
+    "Side Bend":
+        "Bend your body gently to the side.",
+
+    "Balance Stand":
+        "Stand safely and maintain your balance.",
+
+    "Marching in Place":
+        "Lift one knee at a time.",
+
+    "Gentle Full-Body Stretch":
+        "Perform gentle movements for the whole body."
+
+};
+
+
+// =====================================================
+// CONDITION CHANGE
+// =====================================================
+
+document
+.getElementById("condition")
+.addEventListener(
+    "change",
+    async function () {
+
+
+        const condition =
+            this.value;
+
+
+        const exerciseSelect =
+            document
+            .getElementById("exercise");
+
+
+        stopCamera();
+
+
+        if (!condition) {
+
+            exerciseSelect.innerHTML =
+                "<option value=''>" +
+                "First select your condition" +
+                "</option>";
+
+            return;
+        }
+
+
+        exerciseSelect.innerHTML =
+            "<option value=''>" +
+            "Loading..." +
+            "</option>";
+
+
+        try {
+
+
+            const response =
+                await fetch(
+                    "/get_exercises",
+                    {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                condition:
+                                    condition
+
+                            })
+
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            exerciseSelect.innerHTML =
+                "<option value=''>" +
+                "Select Exercise" +
+                "</option>";
+
+
+            data.exercises.forEach(
+                function (exercise) {
+
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+
+                    option.value =
+                        exercise;
+
+
+                    option.textContent =
+                        exercise;
+
+
+                    exerciseSelect
+                    .appendChild(
+                        option
+                    );
+
+                }
+            );
+
+
+        }
+
+        catch (error) {
+
+            exerciseSelect.innerHTML =
+                "<option value=''>" +
+                "Unable to load exercises" +
+                "</option>";
+
+        }
+
+    }
+);
+
+
+// =====================================================
+// EXERCISE CHANGE
+// =====================================================
+
+document
+.getElementById("exercise")
+.addEventListener(
+    "change",
+    function () {
+
+
+        const exercise =
+            this.value;
+
+
+        document
+        .getElementById("suggestion")
+        .textContent =
+            suggestions[exercise] || "";
+
+
+        document
+        .getElementById("feedback")
+        .textContent = "";
+
+
+        document
+        .getElementById("angle")
+        .textContent = "";
+
+
+        if (exercise) {
+
+
+            document
+            .getElementById("startMessage")
+            .textContent =
+                "Camera is starting. Please get into position...";
+
+
+            startCamera();
+
+        }
+
+        else {
+
+            stopCamera();
+
+        }
+
+    }
+);
+
+
+// =====================================================
+// CAMERA VARIABLES
+// =====================================================
+
+let cameraStream = null;
+
+let cameraRunning = false;
+
+let pose = null;
+
+let startTime = 0;
+
+let lastFeedbackTime = 0;
+
+let lastSpoken = "";
+
+let lastSpeechTime = 0;
+
+
+const video =
+    document.getElementById(
+        "camera"
+    );
+
+
+// =====================================================
+// START CAMERA
+// =====================================================
+
+async function startCamera() {
+
+
+    stopCamera();
+
+
+    document
+    .getElementById("cameraBox")
+    .style.display =
+        "block";
+
+
+    document
+    .getElementById("startMessage")
+    .textContent =
+        "Camera is starting...";
+
+
+    try {
+
+
+        cameraStream =
+            await navigator
+            .mediaDevices
+            .getUserMedia({
+
+                video: {
+                    facingMode: "user"
+                },
+
+                audio: false
+
+            });
+
+
+        video.srcObject =
+            cameraStream;
+
+
+        cameraRunning =
+            true;
+
+
+        startTime =
+            Date.now();
+
+
+        lastFeedbackTime =
+            0;
+
+
+        startPoseDetection();
+
+
+    }
+
+    catch (error) {
+
+
+        document
+        .getElementById("startMessage")
+        .textContent =
+            "Camera permission is required.";
+
+    }
+
+}
+
+
+// =====================================================
+// STOP CAMERA
+// =====================================================
+
+function stopCamera() {
+
+
+    cameraRunning =
+        false;
+
+
+    if (cameraStream) {
+
+
+        cameraStream
+        .getTracks()
+        .forEach(
+            function (track) {
+
+                track.stop();
+
+            }
+        );
+
+
+        cameraStream =
+            null;
+
+    }
+
+
+    video.srcObject =
+        null;
+
+
+    document
+    .getElementById("cameraBox")
+    .style.display =
+        "none";
+
+}
+
+
+// =====================================================
+// MEDIAPIPE POSE
+// =====================================================
+
+function startPoseDetection() {
+
+
+    pose =
+        new Pose({
+
+            locateFile:
+                function (file) {
+
+                    return (
+                        "https://cdn.jsdelivr.net/npm/@mediapipe/pose/" +
+                        file
+                    );
+
+                }
+
+        });
+
+
+    pose.setOptions({
+
+        modelComplexity: 1,
+
+        smoothLandmarks: true,
+
+        enableSegmentation: false,
+
+        smoothSegmentation: true,
+
+        minDetectionConfidence: 0.5,
+
+        minTrackingConfidence: 0.5
+
+    });
+
+
+    pose.onResults(
+        onPoseResults
+    );
+
+
+    sendCameraFrame();
+
+}
+
+
+// =====================================================
+// SEND CAMERA FRAME
+// =====================================================
+
+async function sendCameraFrame() {
+
+
+    if (!cameraRunning) {
+
+        return;
+
+    }
+
+
+    await pose.send({
+
+        image: video
+
+    });
+
+
+    requestAnimationFrame(
+        sendCameraFrame
+    );
+
+}
+
+
+// =====================================================
+// CALCULATE ANGLE
+// =====================================================
+
+function calculateAngle(
+    a,
+    b,
+    c
+) {
+
+
+    const radians =
+        Math.atan2(
+            c.y - b.y,
+            c.x - b.x
+        )
+        -
+        Math.atan2(
+            a.y - b.y,
+            a.x - b.x
+        );
+
+
+    let angle =
+        Math.abs(
+            radians *
+            180.0 /
+            Math.PI
+        );
+
+
+    if (angle > 180) {
+
+        angle =
+            360 - angle;
+
+    }
+
+
+    return Math.round(
+        angle
+    );
+
+}
+
+
+// =====================================================
+// POSE RESULTS
+// =====================================================
+
+async function onPoseResults(
+    results
+) {
+
+
+    if (!cameraRunning) {
+
+        return;
+
+    }
+
+
+    if (!results.poseLandmarks) {
+
+
+        document
+        .getElementById("feedback")
+        .textContent =
+            "Move into the camera view.";
+
+
+        return;
+
+    }
+
+
+    // Wait 5 seconds
+
+    const elapsed =
+        Date.now() -
+        startTime;
+
+
+    if (elapsed < 5000) {
+
+
+        const remaining =
+            Math.ceil(
+                (5000 - elapsed) /
+                1000
+            );
+
+
+        document
+        .getElementById("startMessage")
+        .textContent =
+            "Get ready... Feedback starts in " +
+            remaining +
+            " seconds.";
+
+
+        return;
+
+    }
+
+
+    document
+    .getElementById("startMessage")
+    .textContent =
+        "Exercise detection started.";
+
+
+    const landmarks =
+        results.poseLandmarks;
+
+
+    const shoulder =
+        landmarks[11];
+
+    const elbow =
+        landmarks[13];
+
+    const wrist =
+        landmarks[15];
+
+    const hip =
+        landmarks[23];
+
+    const knee =
+        landmarks[25];
+
+    const ankle =
+        landmarks[27];
+
+
+    const exercise =
+        document
+        .getElementById("exercise")
+        .value;
+
+
+    if (!exercise) {
+
+        return;
+
+    }
+
+
+    let angle = 0;
+
+
+    // Arm / shoulder / wrist
+
+    if (
+
+        exercise.includes("Arm") ||
+
+        exercise.includes("Shoulder") ||
+
+        exercise.includes("Wrist")
+
+    ) {
+
+
+        angle =
+            calculateAngle(
+                hip,
+                shoulder,
+                elbow
+            );
+
+    }
+
+
+    // Knee
+
+    else if (
+
+        exercise.includes("Knee")
+
+    ) {
+
+
+        angle =
+            calculateAngle(
+                hip,
+                knee,
+                ankle
+            );
+
+    }
+
+
+    // Hip
+
+    else if (
+
+        exercise.includes("Hip")
+
+    ) {
+
+
+        angle =
+            calculateAngle(
+                shoulder,
+                hip,
+                knee
+            );
+
+    }
+
+
+    // Leg
+
+    else if (
+
+        exercise.includes("Leg") ||
+
+        exercise.includes("Heel") ||
+
+        exercise.includes("Toe") ||
+
+        exercise.includes("Ankle") ||
+
+        exercise.includes("Marching")
+
+    ) {
+
+
+        angle =
+            calculateAngle(
+                hip,
+                knee,
+                ankle
+            );
+
+    }
+
+
+    // Side
+
+    else if (
+
+        exercise.includes("Side")
+
+    ) {
+
+
+        angle =
+            calculateAngle(
+                shoulder,
+                hip,
+                knee
+            );
+
+    }
+
+
+    // Back
+
+    else if (
+
+        exercise.includes("Back")
+
+    ) {
+
+
+        angle =
+            calculateAngle(
+                shoulder,
+                hip,
+                knee
+            );
+
+    }
+
+
+    document
+    .getElementById("angle")
+    .textContent =
+        "Detected Angle: " +
+        angle +
+        "°";
+
+
+    // Feedback every second
+
+    if (
+
+        Date.now() -
+        lastFeedbackTime >
+        1000
+
+    ) {
+
+
+        lastFeedbackTime =
+            Date.now();
+
+
+        try {
+
+
+            const response =
+                await fetch(
+                    "/rehab_feedback",
+                    {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                exercise:
+                                    exercise,
+
+                                angle:
+                                    angle
+
+                            })
+
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            document
+            .getElementById("feedback")
+            .textContent =
+                data.feedback;
+
+
+            speak(
+                data.feedback
+            );
+
+
+        }
+
+        catch (error) {
+
+
+            document
+            .getElementById("feedback")
+            .textContent =
+                "Unable to get feedback.";
+
+        }
+
+    }
+
+}
+
+
+// =====================================================
+// VOICE FEEDBACK
+// =====================================================
+
+function speak(message) {
+
+
+    const now =
+        Date.now();
+
+
+    if (
+
+        message === lastSpoken &&
+
+        now -
+        lastSpeechTime <
+        3000
+
+    ) {
+
+        return;
+
+    }
+
+
+    lastSpoken =
+        message;
+
+
+    lastSpeechTime =
+        now;
+
+
+    if (
+        "speechSynthesis"
+        in window
+    ) {
+
+
+        const speech =
+            new SpeechSynthesisUtterance(
+                message
+            );
+
+
+        window
+        .speechSynthesis
+        .speak(
+            speech
+        );
+
+    }
+
+}
+
+</script>
+
+
+</body>
+
+</html>
